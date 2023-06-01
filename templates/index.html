@@ -14,12 +14,15 @@
 {% for container in containers %}
 <li>
     <ul>
-        <li><b>{{ container.name }}</b></li>
+        <li><b>{{ container.name }}</b> {{ container.status }}</li>
         <li><small>{{ container.id }}</small></li>
+        <li>Image: {{ container.image }}</li>
+        
         <li>
-            <a href="#">Start</a>
-            <a href="#">Stop</a>
-            <a href="#">Delete</a>
+            <a href="{{ url_for('start_container', container_id=container.id) }}">Start</a>
+            <a href="{{ url_for('stop_container', container_id=container.id) }}">Stop</a>
+            <a href="{{ url_for('delete_container', container_id=container.id) }}">Delete</a>
+            <a href="#">Billing</a>
         </li>
     </ul>
 </li>

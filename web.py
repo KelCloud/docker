@@ -1,4 +1,4 @@
-from flask import Flask, flash, render_template, request
+from flask import Flask, flash, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 import docker
@@ -19,6 +19,14 @@ class Container(db.Model):
         self.id = id
         self.name = name
         self.image = image
+
+    @property
+    def status(self):
+        try:
+            container = client.containers.get(self.id)
+        except:
+            return 'not found'
+        return container.status
 
 
 class Billing(db.Model):
@@ -48,6 +56,37 @@ def create_container():
         db.session.commit()
         flash(f'Container Done!! (id = {docker_container.id})')
     return render_template("create_container.html")
+
+
+@app.route('/start_container/<container_id>')
+def start_container(container_id):
+    container = Container.query.filter_by(id=container_id).first_or_404()
+    docker_container = client.containers.get(container_id)
+    docker_container.start()
+    flash('Successfully started container')
+    return redirect(url_for('index'))
+
+
+@app.route('/stop_container/<container_id>')
+def stop_container(container_id):
+    container = Container.query.filter_by(id=container_id).first_or_404()
+    docker_container = client.containers.get(container_id)
+    docker_container.stop()
+    flash('Successfully stopped container')
+    return redirect(url_for('index'))
+
+@app.route('/delete_container/<container_id>')
+def delete_container(container_id):
+    container = Container.query.filter_by(id=container_id).first_or_404()
+    try:
+        docker_container = client.containers.get(container_id)
+        docker_container.remove(force=True)
+    except:
+        pass
+    db.session.delete(container)
+    db.session.commit()
+    flash('Successfully deleted container')
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
