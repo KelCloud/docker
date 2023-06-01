@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+<h1>Dashboard</h1>
+<p>Selamat Datang di Docker Onlen!</p>
+
+<a href="{{ url_for('create_container') }}">Create Container</a>
+{% endblock %}
