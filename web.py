@@ -1,6 +1,6 @@
 from flask import Flask, flash, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-
+from datetime import datetime
 import docker
 
 app = Flask(__name__)
@@ -27,14 +27,25 @@ class Container(db.Model):
         except:
             return 'not found'
         return container.status
+    
+    def calculate_billing(self):
+        start_time = Billing.query.filter_by(container_id=self.id).order_by(Billing.start_time.desc()).first()
+        if start_time:
+            diff = datetime.now() - start_time.start_time
+            seconds = diff.total_seconds()
+            billing_amount = seconds * 1
+            return billing_amount
+        return 0
 
 
 class Billing(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    container_id = db.Column(db.String(255), nullable=False)
     start_time = db.Column(db.DateTime, nullable=False)
     stop_time = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, start_time, stop_time):
+    def __init__(self, container_id, start_time, stop_time):
+        self.container_id = container_id
         self.start_time = start_time
         self.stop_time = stop_time
 
@@ -73,6 +84,12 @@ def stop_container(container_id):
     docker_container = client.containers.get(container_id)
     docker_container.stop()
     flash('Successfully stopped container')
+
+    # Tambahkan entri billing
+    billing = Billing(container_id=container_id, start_time=datetime.now(), stop_time=datetime.now())
+    db.session.add(billing)
+    db.session.commit()
+
     return redirect(url_for('index'))
 
 @app.route('/delete_container/<container_id>')
@@ -87,6 +104,12 @@ def delete_container(container_id):
     db.session.commit()
     flash('Successfully deleted container')
     return redirect(url_for('index'))
+
+
+@app.route('/billing/<container_id>')
+def billing(container_id):
+    container = Container.query.filter_by(id=container_id).first()
+    return render_template("billing.html", container=container)
 
 
 if __name__ == '__main__':

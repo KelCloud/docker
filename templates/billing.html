@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Billing{% endblock %}
+
+{% block body %}
+<h1>Billing</h1>
+
+{% if container %}
+    <h2>Container: {{ container.name }}</h2>
+    <p>Image: {{ container.image }}</p>
+    <p>Status: {{ container.status }}</p>
+    <p>Total Billing per Second: {{ container.calculate_billing() }}</p>
+{% else %}
+    <p>Container not found.</p>
+{% endif %}
+
+<a href="{{ url_for('index') }}">Back to Dashboard</a>
+
+{% endblock %}

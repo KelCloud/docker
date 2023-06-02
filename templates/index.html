@@ -22,7 +22,7 @@
             <a href="{{ url_for('start_container', container_id=container.id) }}">Start</a>
             <a href="{{ url_for('stop_container', container_id=container.id) }}">Stop</a>
             <a href="{{ url_for('delete_container', container_id=container.id) }}">Delete</a>
-            <a href="#">Billing</a>
+            <a href="{{ url_for('billing', container_id=container.id) }}">Billing</a>
         </li>
     </ul>
 </li>
