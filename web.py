@@ -1,7 +1,9 @@
 from flask import Flask, flash, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta
 import docker
+import threading
+from threading import Timer
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///containerdb.sqlite"
@@ -111,6 +113,45 @@ def billing(container_id):
     container = Container.query.filter_by(id=container_id).first()
     return render_template("billing.html", container=container)
 
+
+@app.route('/schedule_container', methods=["GET", "POST"])
+def schedule_container():
+    if request.method == 'POST':
+        name = request.form['name']
+        image = request.form['image']
+        start_time = datetime.strptime(request.form['start_time'], "%Y-%m-%dT%H:%M")
+        stop_time = datetime.strptime(request.form['stop_time'], "%Y-%m-%dT%H:%M")
+
+        docker_container = client.containers.run(image, detach=True, name=name)
+        container = Container(docker_container.id, name, image)
+        container.start_time = start_time  # Menyimpan waktu start dalam objek kontainer
+        db.session.add(container)
+        db.session.commit()
+        flash(f'Container Scheduled and Started!! (name = {name})')
+
+        # Hitung selisih waktu antara sekarang dan waktu stop
+        time_difference = (stop_time - datetime.now()).total_seconds()
+
+        # Buat timer untuk menghentikan kontainer sesuai waktu stop yang diinput
+        timer = Timer(time_difference, stop_scheduled_container, args=[docker_container.id])
+        timer.start()
+
+        return redirect(url_for('index'))
+
+    return render_template("schedule.html")
+
+
+def stop_scheduled_container(container_id):
+    container = Container.query.filter_by(id=container_id).first()
+    docker_container = client.containers.get(container_id)
+    docker_container.stop()
+    flash('Successfully stopped scheduled container')
+
+    # Tambahkan entri billing
+    billing = Billing(container_id=container_id, start_time=container.start_time, stop_time=datetime.now())
+    db.session.add(billing)
+    db.session.commit()
+    
 
 if __name__ == '__main__':
     with app.app_context():

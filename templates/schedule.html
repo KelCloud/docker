@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Schedule Container{% endblock %}
+
+{% block body %}
+<h1>Schedule Container</h1>
+
+<form method="POST" action="{{ url_for('schedule_container') }}">
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" required>
+    </div>
+    <div class="form-group">
+        <label for="image">Image:</label>
+        <input type="text" name="image" id="image" required>
+    </div>
+    <div class="form-group">
+        <label for="start_time">Start Time:</label>
+        <input type="datetime-local" name="start_time" id="start_time" required>
+    </div>
+    <div class="form-group">
+        <label for="stop_time">Stop Time:</label>
+        <input type="datetime-local" name="stop_time" id="stop_time" required>
+    </div>
+    <button type="submit">Schedule Container</button>
+</form>
+
+{% endblock %}
