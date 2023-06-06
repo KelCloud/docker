@@ -3,6 +3,30 @@
 {% block title %}Billing{% endblock %}
 
 {% block body %}
+<style>
+    .container {
+        background-color: white;
+        padding: 30px 50px;
+        margin: 20px;
+        border-radius: 12px;
+    }
+    
+    body {
+        background-color: gray;
+        color: black;
+    }
+    
+    h1, h2 {
+        color: black;
+        margin-top: 0;
+    }
+    
+    p {
+        color: black;
+    }
+</style>
+
+<div class="container">
 <h1>Billing</h1>
 
 {% if container %}
@@ -14,6 +38,7 @@
     <p>Container not found.</p>
 {% endif %}
 
-<a href="{{ url_for('index') }}">Back to Dashboard</a>
+<button class="button button1"><a href="{{ url_for('index') }}">Back to Dashboard</a></button>
+</div>
 
 {% endblock %}

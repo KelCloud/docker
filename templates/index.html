@@ -3,31 +3,62 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block body %}
-<h1>Dashboard</h1>
-<p>Selamat Datang di Docker Onlen!</p>
+<style>
+    .container {
+        background-color: white;
+        padding: 30px 50px;
+        margin: 20px;
+        border-radius: 12px;
+    }
+    
+    body {
+        background-color: gray;
+        color: black;
+    }
+    
+    h1, h2 {
+        color: black;
+    }
+    
+    p {
+        color: black;
+    }
+</style>
 
-<a href="{{ url_for('create_container') }}">Create Container</a>
-<a href="{{ url_for('schedule_container') }}">Schedule Container</a>
+<div class="container">
+    <h1>Dashboard</h1>
+    <p>Selamat Datang di Docker Onlen!</p>
 
-<h2>Containers</h2>
+    <button class="button button1">
+        <a href="{{ url_for('create_container') }}">
+        Create Container<br/>
+        </a> 
+    </button>
 
-<ol>
-{% for container in containers %}
-<li>
-    <ul>
-        <li><b>{{ container.name }}</b> {{ container.status }}</li>
-        <li><small>{{ container.id }}</small></li>
-        <li>Image: {{ container.image }}</li>
-        
+    <button class="button button1">
+        <a href="{{ url_for('schedule_container') }}">Schedule Container</a>
+    </button>
+
+    <h2>Containers</h2>
+
+    <ol>
+        {% for container in containers %}
         <li>
-            <a href="{{ url_for('start_container', container_id=container.id) }}">Start</a>
-            <a href="{{ url_for('stop_container', container_id=container.id) }}">Stop</a>
-            <a href="{{ url_for('delete_container', container_id=container.id) }}">Delete</a>
-            <a href="{{ url_for('billing', container_id=container.id) }}">Billing</a>
+            <ul>
+                <li><b>{{ container.name }}</b> {{ container.status }}</li>
+                <li><small>{{ container.id }}</small></li>
+                <li>Image: {{ container.image }}</li>
+
+                <li>
+                    <button class="button button1"><a href="{{ url_for('start_container', container_id=container.id) }}">Start</a></button>
+                    <button class="button button1"><a href="{{ url_for('stop_container', container_id=container.id) }}">Stop</a></button>
+                    <button class="button button1"><a href="{{ url_for('delete_container', container_id=container.id) }}">Delete</a></button>
+                    <button class="button button1"><a href="{{ url_for('billing', container_id=container.id) }}">Billing</a></button>
+                </li>
+            </ul>
         </li>
-    </ul>
-</li>
-{% endfor %}
-</ol>
+        {% endfor %}
+    </ol>
+</div>
 
 {% endblock %}

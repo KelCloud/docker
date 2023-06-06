@@ -3,6 +3,34 @@
 {% block title %}Create Container{% endblock %}
 
 {% block body %}
+
+<style>
+    .container {
+        background-color: white;
+        padding: 30px 50px;
+        margin: 20px;
+        border-radius: 12px;
+    }
+    
+    body {
+        background-color: gray;
+        color: black;
+    }
+    
+    h1, h2 {
+        color: black;
+    }
+    
+    p {
+        color: black;
+    }
+
+    li {
+        color: lime
+    }
+</style>
+
+<div class="container">
 <h1>Create Container</h1>
 
 <form method="post">
@@ -23,8 +51,9 @@
         <button type="submit">Create</button>
     </p>
     <p>
-        <a href="{{ url_for('index') }}">Back to Dashboard</a>
+        <button class="button button1"><a href="{{ url_for('index') }}">Back to Dashboard</a></button>
     </p>
 </form>
+</div>
 
 {% endblock %}
