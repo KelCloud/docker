@@ -3,34 +3,36 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block body %}
+
+<link href='https://fonts.googleapis.com/css?family=Lexend' rel='stylesheet'>
 <style>
     .container {
         background-color: #383838;
         padding: 30px 50px;
         margin: 80px 20px;
         border-radius: 12px;
-        font-family: sans-serif;
+        font-family: lexend;
     }
     
     body {
         background-color: #6e6e6e;
         color: black;
-        font-family: sans-serif;
+        font-family: lexend;
     }
     
     h1{
         color: white;
-        font-family: sans-serif;
+        font-family: lexend;
     }
     h2{
         color: white;
-        font-family: sans-serif;
+        font-family: lexend;
         margin-top:0;
     }
     
     p {
         color: black;
-        font-family: sans-serif;
+        font-family: lexend;
     }
     
     header {
@@ -41,7 +43,6 @@
         position: absolute;
         top: 0;
         left: 0;
-        font-family: sans-serif;
         line-height: 10px;
         display: flex;
         justify-content: space-between;
@@ -56,7 +57,7 @@
         display: none;
         position: absolute;
         background-color: #6e6e6e;
-        min-width: 180px;
+        min-width: 190px;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         z-index: 1;
     }
@@ -93,6 +94,7 @@
         border-radius: 0;
         font-weight: bold;
         transition-duration: 0.2s;
+        font-family: lexend;
     }
     
     .button:hover {
@@ -101,7 +103,7 @@
     }
 
     .tab{
-        margin: 12px 150px 0 0;
+        margin: 10px 150px 0 0;
     }
     
     .cont {
@@ -116,6 +118,7 @@
     .cont name {
         font-size: 18px;
         font-weight: bold;
+        font-family: lexend;
     }
 
     .cont status {
@@ -148,7 +151,7 @@
 
 <header>
     <div class="logo">
-        <img src="logodocker.png">
+        <img src="logodocker.png"/>
         <h1>Rhazesw Docker SIUU</h1>
     </div>
     <div class="tab">

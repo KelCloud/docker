@@ -3,29 +3,36 @@
 {% block title %}Billing{% endblock %}
 
 {% block body %}
+
+<link href='https://fonts.googleapis.com/css?family=Lexend' rel='stylesheet'>
 <style>
     .container {
         background-color: #383838;
         padding: 30px 50px;
         margin: 80px 20px;
         border-radius: 12px;
-        font-family: sans-serif;
+        font-family: lexend;
     }
     
     body {
         background-color: #6e6e6e;
         color: black;
-        font-family: sans-serif;
+        font-family: lexend;
     }
     
-    h1, h2 {
+    h1{
         color: white;
-        font-family: sans-serif;
+        font-family: lexend;
+    }
+    h2{
+        color: white;
+        font-family: lexend;
+        margin-top:0;
     }
     
     p {
         color: black;
-        font-family: sans-serif;
+        font-family: lexend;
     }
     
     header {
@@ -36,7 +43,7 @@
         position: absolute;
         top: 0;
         left: 0;
-        font-family: sans-serif;
+        font-family: lexend;
         line-height: 10px;
         display: flex;
         justify-content: space-between;
@@ -51,7 +58,7 @@
         display: none;
         position: absolute;
         background-color: #6e6e6e;
-        min-width: 180px;
+        min-width: 190px;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         z-index: 1;
     }
@@ -89,6 +96,7 @@
         border-radius: 0;
         font-weight: bold;
         transition-duration: 0.2s;
+        font-family: lexend;
     }
 
     .button:hover {
@@ -97,7 +105,7 @@
     }
 
     .tab{
-        margin: 12px 150px 0 0;
+        margin: 10px 150px 0 0;
     }
 
     input[type="text"] {
@@ -161,18 +169,12 @@
     padding: 10px 0 10px 20px;
     border-radius: 5px;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    line-height: 30px;
 }
 
 .cont name {
     font-size: 18px;
     font-weight: bold;
-    line-height: 30px;
-}
-
-.cont p {
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 30px;
 }
 
 .cont status {
@@ -200,12 +202,12 @@
 </header>
 
 <div class="container">
-<judul>Billing</judul>
+<h2>Billing</h2>
 
 {% if container %}
 <div class="cont">
     <name>{{ container.name }}</name> <status>({{ container.status }})</status></br>
-    <name>Image: {{ container.image }}</name> </br>
+    <name>Image: {{ container.image }}</name><br/>
     <name>Total Billing per Second: {{ container.calculate_billing() }}</name>
 {% else %}
     <p>Container not found.</p>
