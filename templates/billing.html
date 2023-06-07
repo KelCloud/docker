@@ -207,8 +207,8 @@
 {% if container %}
 <div class="cont">
     <name>{{ container.name }}</name> <status>({{ container.status }})</status></br>
-    <name>Image: {{ container.image }}</name><br/>
-    <name>Total Billing per Second: {{ container.calculate_billing() }}</name>
+    Image: {{ container.image }}<br/>
+    Total Billing per Second: {{ container.calculate_billing() }}
 {% else %}
     <p>Container not found.</p>
 {% endif %}
