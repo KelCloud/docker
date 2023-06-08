@@ -201,15 +201,26 @@
 
 <div class="container">
 <h2>Billing</h2>
+<p style="font-size: 0;">
+    {{container.calculate_billing()}}
+</p>
 
-{% if container %}
-<div class="cont">
-    <name>{{ container.name }}</name> <status>({{ container.status }})</status></br>
-    Image: {{ container.image }}<br/>
-    Total Billing per Second: {{ container.calculate_billing() }}
-{% else %}
-    <p>Container not found.</p>
-{% endif %}
+    {% if container %}
+    <div class="cont">
+        <name>{{ container.name }}</name> <status>({{ container.status }})</status>
+        </br>
+        Image: {{ container.image }}</br>
+        Port: {{ container.port }}</br>
+        {% if container.status == 'running' %}
+            Billing Amount: Rp{{ container.billing_amount }},00 </br>
+        {% elif container.status == 'exited' %}
+            Billing Added: Rp{{container.billing_amount}},00 </br>
+            Total Billing: Rp{{ container.total_billing }},00 </br>
+        {% endif %}
+    {% else %}
+        <p>Container not found.</p>
+    {% endif %}
+    </div>
 </div>
 </div>
 

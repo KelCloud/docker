@@ -170,10 +170,11 @@
 
         {% for container in containers %}
         <div class="cont">
-            <ul>
+            <br>
                 <name>{{ container.name }}</name> <status>({{ container.status }})</status></br>
                 <small>{{ container.id }}</small></br>
                 Image: {{ container.image }}</br>
+                Port : {{container.port}}</br>
 
                     <a href="{{ url_for('start_container', container_id=container.id) }}"><button class="button button1">start</button></a>
                     <a href="{{ url_for('stop_container', container_id=container.id) }}"><button class="button button1">stop</button></a>
