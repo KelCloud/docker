@@ -212,10 +212,10 @@
         Image: {{ container.image }}</br>
         Port: {{ container.port }}</br>
         {% if container.status == 'running' %}
-            Billing Amount: Rp{{ container.billing_amount }},00 </br>
+            Billing Amount: Rp{{ container.billing_amount }}0,00 </br>
         {% elif container.status == 'exited' %}
-            Billing Added: Rp{{container.billing_amount}},00 </br>
-            Total Billing: Rp{{ container.total_billing }},00 </br>
+            Billing Added: Rp{{container.billing_amount}}0,00 </br>
+            Total Billing: Rp{{ container.total_billing }}0,00 </br>
         {% endif %}
     {% else %}
         <p>Container not found.</p>
