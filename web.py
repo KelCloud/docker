@@ -89,6 +89,8 @@ def create_container():
         # Create a Container object and save it in the database
         container = Container(docker_container.id, name, image, port)
         db.session.add(container)
+        billing = Billing(container_id=container.id, start_time=datetime.now(), stop_time=None)
+        db.session.add(billing)
         db.session.commit()
         flash(f'Container Done!! (id = {docker_container.id})')
 
@@ -166,6 +168,8 @@ def schedule_container():
         return redirect(url_for('index'))
 
     return render_template("schedule.html")
+
+
 
 
 def stop_scheduled_container(container_id):
