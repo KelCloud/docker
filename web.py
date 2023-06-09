@@ -41,8 +41,9 @@ class Container(db.Model):
             if latest_billing:
                 diff = datetime.now() - latest_billing.start_time
                 seconds = diff.total_seconds()
-                self.billing_amount = int(seconds) * 1
-                return self.billing_amount
+                if seconds >= 0:
+                    self.billing_amount = int(seconds) * 1
+                    return self.billing_amount
         elif container_status == 'exited':
             total_billing = 0
             billings = Billing.query.filter_by(container_id=self.id).all()
@@ -148,11 +149,12 @@ def schedule_container():
     if request.method == 'POST':
         name = request.form['name']
         image = request.form['image']
+        port = request.form['port']
         start_time = datetime.strptime(request.form['start_time'], "%Y-%m-%dT%H:%M")
         stop_time = datetime.strptime(request.form['stop_time'], "%Y-%m-%dT%H:%M")
 
-        docker_container = client.containers.run(image, detach=True, name=name)
-        container = Container(docker_container.id, name, image)
+        docker_container = client.containers.run(image, detach=True, name=name, ports={'80/tcp': port})
+        container = Container(docker_container.id, name, image, port)
         container.start_time = start_time  # Menyimpan waktu start dalam objek kontainer
         db.session.add(container)
         db.session.commit()
@@ -165,11 +167,14 @@ def schedule_container():
         timer = Timer(time_difference, stop_scheduled_container, args=[docker_container.id])
         timer.start()
 
+        billing = Billing(container_id=container.id, start_time=start_time, stop_time=None)
+        billing.billing_amount = 0
+        db.session.add(billing)
+        db.session.commit()
+
         return redirect(url_for('index'))
 
     return render_template("schedule.html")
-
-
 
 
 def stop_scheduled_container(container_id):
@@ -179,10 +184,12 @@ def stop_scheduled_container(container_id):
     flash('Successfully stopped scheduled container')
 
     # Tambahkan entri billing
-    billing = Billing(container_id=container_id, start_time=container.start_time, stop_time=datetime.now())
-    db.session.add(billing)
-    db.session.commit()
-    
+    billing = Billing.query.filter_by(container_id=container_id, stop_time=None).first()
+    if billing:
+        billing.stop_time = datetime.now()
+        db.session.commit()
+
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     with app.app_context():
