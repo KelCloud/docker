@@ -35,7 +35,6 @@ class Container(db.Model):
         return container.status
 
     def calculate_billing(self):
-        # Check if the container is running
         container_status = self.status
         if container_status == 'running':
             latest_billing = Billing.query.filter_by(container_id=self.id).order_by(Billing.start_time.desc()).first()
@@ -83,12 +82,10 @@ def create_container():
     if request.method == 'POST':
         name = request.form['name']
         image = request.form['image']
-        port = request.form['port']  # Retrieve the port value from the form
+        port = request.form['port'] 
 
-        # Start the container with the specified port
         docker_container = client.containers.run(image, detach=True, ports={'80/tcp': port})
 
-        # Create a Container object and save it in the database
         container = Container(docker_container.id, name, image, port)
         db.session.add(container)
         billing = Billing(container_id=container.id, start_time=datetime.now(), stop_time=None)
@@ -156,15 +153,13 @@ def schedule_container():
 
         docker_container = client.containers.run(image, detach=True, name=name, ports={'80/tcp': port})
         container = Container(docker_container.id, name, image, port)
-        container.start_time = start_time  # Menyimpan waktu start dalam objek kontainer
+        container.start_time = start_time 
         db.session.add(container)
         db.session.commit()
         flash(f'Container Scheduled and Started!! (name = {name})')
-
-        # Hitung selisih waktu antara sekarang dan waktu stop
+        
         time_difference = (stop_time - datetime.now()).total_seconds()
 
-        # Buat timer untuk menghentikan kontainer sesuai waktu stop yang diinput
         timer = threading.Timer(time_difference, stop_scheduled_container, args=[docker_container.id])
         timer.start()
 
