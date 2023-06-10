@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import docker
 import threading
 from threading import Timer
+from flask import current_app
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///containerdb.sqlite"
@@ -164,7 +165,7 @@ def schedule_container():
         time_difference = (stop_time - datetime.now()).total_seconds()
 
         # Buat timer untuk menghentikan kontainer sesuai waktu stop yang diinput
-        timer = Timer(time_difference, stop_scheduled_container, args=[docker_container.id])
+        timer = threading.Timer(time_difference, stop_scheduled_container, args=[docker_container.id])
         timer.start()
 
         billing = Billing(container_id=container.id, start_time=start_time, stop_time=None)
@@ -178,16 +179,17 @@ def schedule_container():
 
 
 def stop_scheduled_container(container_id):
-    container = Container.query.filter_by(id=container_id).first()
-    docker_container = client.containers.get(container_id)
-    docker_container.stop()
-    flash('Successfully stopped scheduled container')
+    with app.app_context():
+        container = Container.query.filter_by(id=container_id).first()
+        docker_container = client.containers.get(container_id)
+        docker_container.stop()
+        print('Successfully stopped scheduled container')
 
-    # Tambahkan entri billing
-    billing = Billing.query.filter_by(container_id=container_id, stop_time=None).first()
-    if billing:
-        billing.stop_time = datetime.now()
-        db.session.commit()
+        # Tambahkan entri billing
+        billing = Billing.query.filter_by(container_id=container_id, stop_time=None).first()
+        if billing:
+            billing.stop_time = datetime.now()
+            db.session.commit()
 
     return redirect(url_for('index'))
 
